@@ -11,7 +11,9 @@ RoxygenNote: 7.1.2
 Imports: 
     crayon,
     dplyr,
+    ggplot2,
     glue,
+    lubridate,
     magrittr,
     progress,
     purrr,

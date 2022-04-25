@@ -14,7 +14,7 @@ page_count <- function(url){
   p <- 1
   url_p1 <- glue::glue(url)
   page <- rvest::read_html(url_p1)
-  cat(crayon::blue("Counting pages to crawl over...\n"))
+  cat(crayon::blue("Counting pages to crawl over..."))
   out <- page %>%
     rvest::html_elements("#filter-info-section") %>%
     rvest::html_text() %>%
@@ -24,4 +24,5 @@ page_count <- function(url){
                   value = as.numeric(regmatches(value, gregexpr("\\d+", value))[[1]][2]),
                   value = ceiling(value/10)) %>%
     dplyr::pull()
+  cat(crayon::blue(glue::glue("{out} pages...\n")))
 }
