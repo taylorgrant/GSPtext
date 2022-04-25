@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_reviews()}
+#' data <- get_reviews()}
 get_reviews <- function() {
 
   # user prompt
