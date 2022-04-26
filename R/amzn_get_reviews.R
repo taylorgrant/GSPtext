@@ -9,15 +9,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
-#' data <- amzn_get_reviews(url}
+#' url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/product-reviews/B07L1LYTPX/ref=cm"
+#' data <- amzn_get_reviews(url)}
 amzn_get_reviews <- function(link) {
 
   # get reviews
   tmp <- scraper(link)
   # identify pages with errors (returned as NA)
   errors <- which(is.na(tmp))
-  cat(crayon::red("There were css errors on the following pages [", errors, "]. \nAs a result, reviews from these pages have been dropped from the data..."))
+  cat("There were css errors on the following pages [", errors, "]. \nAs a result, reviews from these pages have been dropped from the data...")
 
   # drop NA and reduce list to data frame
   out_df <- tmp[!is.na(tmp)] %>%
@@ -25,4 +25,7 @@ amzn_get_reviews <- function(link) {
     dplyr::mutate(date = as.Date(trimws(gsub(".*\\on", "", date)), format = "%B %d, %Y"),
                   stars = as.numeric(trimws(gsub("\\out.*", "", stars))),
                   text = trimws(gsub("[\r\n]", "", text)))
+
+  review_summary(out_df)
+  out_df
 }
