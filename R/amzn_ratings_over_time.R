@@ -39,18 +39,18 @@ amzn_ratings_over_time <- function(data, time = c("month", "year"), viz_type = c
     p +
       ggplot2::geom_line(color = "black", size = 1) +
       ggplot2::theme_minimal() +
-      ggplot2::scale_y_continuous(limits = c(0,5)) +
+      ggplot2::scale_y_continuous(limits = c(1,5)) +
       ggplot2::geom_smooth(se = FALSE)
   } else if (viz_type == "line" && trend == "lm") {
     p +
       ggplot2::geom_line(color = "black", size = 1) +
       ggplot2::theme_minimal() +
-      ggplot2::scale_y_continuous(limits = c(0,5)) +
+      ggplot2::scale_y_continuous(limits = c(1,5)) +
       ggplot2::geom_smooth(se = FALSE, method = "lm")
   } else {
     p +
       ggplot2::geom_line(color = "black", size = 1) +
       ggplot2::theme_minimal() +
-      ggplot2::scale_y_continuous(limits = c(0,5))
+      ggplot2::scale_y_continuous(limits = c(1,5))
   }
 }
