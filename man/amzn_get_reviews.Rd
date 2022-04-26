@@ -17,6 +17,6 @@ Convenience wrapper around functions that scrape Amazon reviews. Provide a produ
 }
 \examples{
 \dontrun{
-url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
-data <- amzn_get_reviews(url}
+url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/product-reviews/B07L1LYTPX/ref=cm"
+data <- amzn_get_reviews(url)}
 }

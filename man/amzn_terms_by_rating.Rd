@@ -14,6 +14,9 @@ ggplot2 graph - scatterplot with overlaid text
 }
 \description{
 Graph with the most frequent terms used and each term is positioned by its average star rating. The dashed line represents the average star rating for the product.
+
+For example, reviewers for a specific product have used the word "perfect" 88 times and the average rating of those reviews is 4.85,
+"perfect" will be plotted at (x = 88, y = 4.85).
 }
 \examples{
 \dontrun{
