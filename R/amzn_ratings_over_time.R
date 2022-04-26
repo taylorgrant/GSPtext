@@ -21,14 +21,14 @@ amzn_ratings_over_time <- function(data, time = c("month", "year"), viz_type = c
   toCap <- function(x) gsub("(?<=^|_)([a-z])", "\\U\\1", x, perl=TRUE)
 
   p <- data %>%
-    dplyr::mutate(time_agg = lubridate::floor_date(review_date, time)) %>%
+    dplyr::mutate(time_agg = lubridate::floor_date(date, time)) %>%
     dplyr::group_by(time_agg) %>%
-    dplyr::summarise(avg_star = mean(review_stars)) %>%
+    dplyr::summarise(avg_star = mean(stars)) %>%
     ggplot2::ggplot(ggplot2::aes(x = time_agg, y = avg_star)) +
     ggplot2::labs(x = "Timeframe", y = "Avg. Star Rating",
          title = glue::glue("Average Star Rating by {toCap(time)}"),
          subtitle = glue::glue("{bp}"),
-         caption = glue::glue("Analysis by GS&P; Source: Amazon\ \n Based on {dim(tmp)[1]} reviews"))
+         caption = glue::glue("Analysis by GS&P; Source: Amazon\ \n Based on {dim(data)[1]} reviews"))
 
   if (viz_type == "bar") {
     p +

@@ -22,7 +22,7 @@ amzn_get_reviews <- function(link) {
   # drop NA and reduce list to data frame
   out_df <- tmp[!is.na(tmp)] %>%
     purrr::reduce(dplyr::bind_rows) %>%
-    dplyr::mutate(review_date = as.Date(trimws(gsub(".*\\on", "", review_date)), format = "%B %d, %Y"),
-                  review_stars = as.numeric(trimws(gsub("\\out.*", "", review_stars))),
-                  review_text = trimws(gsub("[\r\n]", "", review_text)))
+    dplyr::mutate(date = as.Date(trimws(gsub(".*\\on", "", date)), format = "%B %d, %Y"),
+                  stars = as.numeric(trimws(gsub("\\out.*", "", stars))),
+                  text = trimws(gsub("[\r\n]", "", text)))
 }

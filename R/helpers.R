@@ -100,10 +100,10 @@ scraper <- function(link) {
     text <- get_it(page, rev_text)
 
     # put together in
-    tibble::tibble(review_date = date,
-                   review_stars = star,
-                   review_headline = hl,
-                   review_text = text,
+    tibble::tibble(date = date,
+                   stars = star,
+                   headline = hl,
+                   text = text,
                    link = paged_url
     )
 
