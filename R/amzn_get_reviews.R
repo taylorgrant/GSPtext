@@ -1,18 +1,17 @@
 #' Get Amazon Reviews
 #'
 #' @description Convenience wrapper around functions that scrape Amazon reviews. Provide a product link and this will determine the number of pages to crawl over and will return a clean data frame of reviews.
-#' The function provides a prompt for the user to paste in the product url.
+#'
+#' @param link A link to an Amazon product
 #'
 #' @return Data frame with date, stars, headline, review text, and the paginated link.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' data <- amzn_get_reviews()}
-amzn_get_reviews <- function() {
-
-  # user prompt
-  link <- readline(cat(crayon::bgCyan("Please provide the url of the product you wish to get reviews for:")))
+#' url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
+#' data <- amzn_get_reviews(url}
+amzn_get_reviews <- function(link) {
 
   # get reviews
   tmp <- scraper(link)
