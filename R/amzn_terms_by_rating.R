@@ -15,17 +15,17 @@ amzn_terms_by_rating <- function(data) {
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
 
   data %>%
-    dplyr::mutate(review_text = gsub("[[:punct:]]|[[:digit:]]", "", review_text)) %>%
-    tidytext::unnest_tokens(word, review_text) %>%
+    dplyr::mutate(text = gsub("[[:punct:]]|[[:digit:]]", "", text)) %>%
+    tidytext::unnest_tokens(word, text) %>%
     dplyr::anti_join(tidytext::stop_words) %>%
     dplyr::group_by(word) %>%
     dplyr::summarise(
       n = dplyr::n(),
-      rating = mean(review_stars)
+      rating = mean(stars)
     ) %>%
     ggplot2::ggplot(ggplot2::aes(n, rating)) +
     ggplot2::geom_hline(
-      yintercept = mean(data$review_stars), lty = 2,
+      yintercept = mean(data$stars), lty = 2,
       color = "gray50", size = 1
     ) +
     ggplot2::geom_jitter(color = "midnightblue", alpha = 0.4, size = .5) +
@@ -41,6 +41,6 @@ amzn_terms_by_rating <- function(data) {
     ggplot2::labs(x = "Term Count", y = "Star Rating",
          title = "Most common words used in reviews, by review's star rating",
          subtitle = glue::glue("{bp}"),
-         caption = glue::glue("Analysis by GS&P; Source: Amazon\ \n Dashed line represents averaage star rating for this product: {round(mean(data$review_stars), 2)} average.\nBased on {dim(tmp)[1]} reviews")
+         caption = glue::glue("Analysis by GS&P; Source: Amazon\ \n Dashed line represents averaage star rating for this product: {round(mean(data$stars), 2)} average.\nBased on {dim(data)[1]} reviews")
     )
 }
