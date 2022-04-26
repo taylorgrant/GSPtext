@@ -15,5 +15,5 @@ The function provides a prompt for the user to paste in the product url.
 }
 \examples{
 \dontrun{
-get_reviews()}
+data <- get_reviews()}
 }
