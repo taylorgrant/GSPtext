@@ -4,16 +4,19 @@
 \alias{amzn_get_reviews}
 \title{Get Amazon Reviews}
 \usage{
-amzn_get_reviews()
+amzn_get_reviews(link)
+}
+\arguments{
+\item{link}{A link to an Amazon product}
 }
 \value{
 Data frame with date, stars, headline, review text, and the paginated link.
 }
 \description{
 Convenience wrapper around functions that scrape Amazon reviews. Provide a product link and this will determine the number of pages to crawl over and will return a clean data frame of reviews.
-The function provides a prompt for the user to paste in the product url.
 }
 \examples{
 \dontrun{
-data <- amzn_get_reviews()}
+url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
+data <- amzn_get_reviews(url}
 }
