@@ -38,7 +38,7 @@ page_count <- function(url){
   p <- 1
   url_p1 <- glue::glue(url)
   page <- rvest::read_html(url_p1)
-  cat(crayon::blue("Counting pages to crawl over..."))
+  cat(crayon::cyan("Counting pages to crawl over..."))
   out <- page %>%
     rvest::html_elements("#filter-info-section") %>%
     rvest::html_text() %>%
@@ -48,7 +48,8 @@ page_count <- function(url){
                   value = as.numeric(regmatches(value, gregexpr("\\d+", value))[[1]][2]),
                   value = ceiling(value/10)) %>%
     dplyr::pull()
-  cat(crayon::blue(glue::glue("{out} pages...\n")))
+  cat(crayon::cyan(glue::glue("{out} pages...\n\n")))
+  return(out)
 }
 
 
@@ -63,7 +64,8 @@ page_count <- function(url){
 #'
 #' @examples
 #' \dontrun{
-#' scraper("url")}
+#' url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
+#' scraper(url)}
 scraper <- function(link) {
 
   # get paginated reviews url
@@ -72,7 +74,7 @@ scraper <- function(link) {
   page_total <- page_count(p_url)
   p <- 1:page_total
 
-  cat(crayon::blue("Pulling all reviews now. This may take a few minutes depending on product popularity...\n"))
+  cat(crayon::cyan("Pulling all reviews now. This may take a few minutes depending on product popularity...\n\n"))
   reviews <- purrr::possibly(function(link, p) {
     # progress bar
     pb$tick()
@@ -80,7 +82,7 @@ scraper <- function(link) {
     star_rating <- "#cm_cr-review_list .review-rating"
     rev_hed <- ".a-text-bold span"
     rev_date <- "#cm_cr-review_list .review-date"
-    rev_text <- ".review-text-content span"
+    rev_text <- ".review-text-content"
 
     # function with css
     get_it <- purrr::possibly(function(pg, element){
@@ -93,11 +95,21 @@ scraper <- function(link) {
     paged_url <- glue::glue(build_url(link))
     page <- rvest::read_html(paged_url)
 
+    # drop empty elements in vector if more than 10 elements
+    drop_empty <- function(x) {
+      check_empty <- function(x) all(x != "")
+      if (length(x) > 10 & check_empty(x) == FALSE) {
+        x[x != ""]
+      } else {
+        x
+      }
+    }
+
     # scrape each part of the review
-    star <- get_it(page, star_rating)
-    hl <- get_it(page, rev_hed)
-    date <- get_it(page, rev_date)
-    text <- get_it(page, rev_text)
+    star <- drop_empty(get_it(page, star_rating))
+    hl <- drop_empty(get_it(page, rev_hed))
+    date <- drop_empty(get_it(page, rev_date))
+    text <- drop_empty(get_it(page, rev_text))
 
     # put together in
     tibble::tibble(date = date,
@@ -111,3 +123,54 @@ scraper <- function(link) {
   pb <- progress::progress_bar$new(total = length(p))
   out <- purrr::map2(p_url, p, reviews)
 }
+
+#' Summary Review
+#'
+#' @description Summarizing the reviews scraped.
+#'
+#' Console prints the number of reviews scraped, average word count,
+#'
+#' @param data Data frame created by `GSPtext::get_reviews()` or in the same format
+#'
+#' @return Information is printed in console for summary purposes
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' review_summary(data)}
+review_summary <- function(data) {
+
+  bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
+
+  # review count
+  rev_ct <- dim(data)[1]
+
+  # word counts average
+  avg_per <- data %>%
+    dplyr::summarise(avg = mean(lengths(gregexpr("\\w+", text)))) %>%
+    dplyr::pull()
+
+  avg_star <- data %>%
+    dplyr::group_by(stars) %>%
+    dplyr::summarise(avg_wordcount = mean(lengths(gregexpr("\\w+", text))))
+
+  # reviews over time
+  by_time <- data %>%
+    dplyr::mutate(year = lubridate::year(date)) %>%
+    dplyr::group_by(year) %>%
+    dplyr::summarise(review_count = dplyr::n(),
+                     avg_rating = mean(stars),
+                     avg_wordcount = mean(lengths(gregexpr("\\w+", text))))
+
+  cat("\n\nSummary of:", crayon::bold$bgBlue(bp),
+      crayon::bold("\n\nReviews scraped:"), rev_ct,
+      crayon::bold("\nAverage Star Rating:"), round(mean(data$stars), 2),
+      crayon::bold("\nAverage number of words per review:"), round(avg_per),
+      crayon::bold("\n\nAverage number of words per star rating:"))
+  print(knitr::kable(avg_star, format = "rst", digits = 2))
+  cat(crayon::bold("\nBreakdown of reviews by year:"))
+  print(knitr::kable(by_time, format = "rst", digits = 2))
+
+  cat(crayon::bold("\nGeneric link to reviews:"), data$link[1])
+}
+
