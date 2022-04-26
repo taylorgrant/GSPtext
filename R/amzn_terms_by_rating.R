@@ -1,4 +1,4 @@
-#' Terms by Star
+#' Terms by Amazon Rating
 #'
 #' @description Graph with the most frequent terms used and each term is positioned by its average star rating. The dashed line represents the average star rating for the product.
 #' @param data Data frame created by `GSPtext::get_reviews()` or in the same format
@@ -8,8 +8,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' terms_by_star(data)}
-terms_by_star <- function(data) {
+#' amzn_terms_by_rating(data)}
+amzn_terms_by_rating <- function(data) {
 
   # get brand/product from link
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)

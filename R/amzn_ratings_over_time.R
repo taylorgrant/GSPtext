@@ -1,4 +1,4 @@
-#' Ratings Over Time
+#' Amazon Ratings Over Time
 #'
 #' @description Graphing star ratings over time. Time frame is either Month or Year. Graph types are either Bar or Line. If using a Line plot, there is an option to include a `geom_smooth()` that can be set to either "loess" or "lm".
 #'
@@ -12,8 +12,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' ratings_over_time(data, time = "month", viz_type = "line", trend = "lm")}
-ratings_over_time <- function(data, time = c("month", "year"), viz_type = c("bar", "line"), trend = c("loess", "lm", "FALSE")) {
+#' amzn_ratings_over_time(data, time = "month", viz_type = "line", trend = "lm")}
+amzn_ratings_over_time <- function(data, time = c("month", "year"), viz_type = c("bar", "line"), trend = c("loess", "lm", "FALSE")) {
 
   # get brand/product from link
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)

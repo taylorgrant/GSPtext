@@ -1,4 +1,4 @@
-#' Get Reviews
+#' Get Amazon Reviews
 #'
 #' @description Convenience wrapper around functions that scrape Amazon reviews. Provide a product link and this will determine the number of pages to crawl over and will return a clean data frame of reviews.
 #' The function provides a prompt for the user to paste in the product url.
@@ -8,8 +8,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' data <- get_reviews()}
-get_reviews <- function() {
+#' data <- amzn_get_reviews()}
+amzn_get_reviews <- function() {
 
   # user prompt
   link <- readline(cat(crayon::bgCyan("Please provide the url of the product you wish to get reviews for:")))
