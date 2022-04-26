@@ -21,10 +21,10 @@ ratings_over_time(
 \item{trend}{Include a trend line in the graph - either "lm" or "loess"}
 }
 \value{
-ggplo2 graphs - either bar or line plots
+ggplot2 graphs - either bar or line plots
 }
 \description{
-Graphing star ratings over time. Timeframe is either Month or Year. Graph types are either Bar or Line. If using a Line plot, there is an option to include a geom_smooth() that can be set to either "loess" or "lm".
+Graphing star ratings over time. Time frame is either Month or Year. Graph types are either Bar or Line. If using a Line plot, there is an option to include a \code{geom_smooth()} that can be set to either "loess" or "lm".
 }
 \examples{
 \dontrun{

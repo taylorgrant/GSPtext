@@ -1,13 +1,13 @@
 #' Ratings Over Time
 #'
-#' @description Graphing star ratings over time. Timeframe is either Month or Year. Graph types are either Bar or Line. If using a Line plot, there is an option to include a geom_smooth() that can be set to either "loess" or "lm".
+#' @description Graphing star ratings over time. Time frame is either Month or Year. Graph types are either Bar or Line. If using a Line plot, there is an option to include a `geom_smooth()` that can be set to either "loess" or "lm".
 #'
 #' @param data Data frame created by `GSPtext::get_reviews()` or in the same format
 #' @param time Time frame to aggregate by - either Monthly or Yearly
 #' @param viz_type Type of graph - either bar graph or line chart
 #' @param trend Include a trend line in the graph - either "lm" or "loess"
 #'
-#' @return ggplo2 graphs - either bar or line plots
+#' @return ggplot2 graphs - either bar or line plots
 #' @export
 #'
 #' @examples
@@ -28,7 +28,7 @@ ratings_over_time <- function(data, time = c("month", "year"), viz_type = c("bar
     ggplot2::labs(x = "Timeframe", y = "Avg. Star Rating",
          title = glue::glue("Average Star Rating by {toCap(time)}"),
          subtitle = glue::glue("{bp}"),
-         caption = "Analysis by GS&P; Source: Amazon")
+         caption = glue::glue("Analysis by GS&P; Source: Amazon\ \n Based on {dim(tmp)[1]} reviews"))
 
   if (viz_type == "bar") {
     p +
