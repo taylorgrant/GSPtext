@@ -1,9 +1,10 @@
-#' Terms by Amazon Rating
+#' Terms by Average Amazon Rating
 #'
 #' @description Graph with the most frequent terms used and each term is positioned by its average star rating. The dashed line represents the average star rating for the product.
 #'
-#' For example, reviewers for a specific product have used the word "perfect" 88 times and the average rating of those reviews is 4.85,
+#' For example, if reviewers for a specific product used the word "perfect" 88 times and the average rating of the reviews using that term is 4.85,
 #' "perfect" will be plotted at (x = 88, y = 4.85).
+#'
 #'
 #' @param data Data frame created by `GSPtext::get_reviews()` or in the same format
 #'
@@ -12,7 +13,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' amzn_terms_by_rating(data)}
+#' amzn_terms_by_rating(data),
+#'
+#' # to save after running
+#' amzn_terms_by_rating(data)
+#' ggsave("directory/filename.png")}
 amzn_terms_by_rating <- function(data) {
 
   cat(crayon::blue("To save this graph, use the `ggsave()` function. Type '?ggsave' into the console to learn more...\n\n"))
