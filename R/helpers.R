@@ -64,7 +64,7 @@ page_count <- function(url){
 #'
 #' @examples
 #' \dontrun{
-#' url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
+#' url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/product-reviews/B07L1LYTPX"
 #' scraper(url)}
 scraper <- function(link) {
 
@@ -91,6 +91,13 @@ scraper <- function(link) {
         rvest::html_text()
     }, otherwise = NA_character_)
 
+    # find ugc images
+    get_img <- purrr::possibly(function(pg) {
+      pg %>%
+        rvest::html_elements(".review-image-tile") %>%
+        rvest::html_attr('src')
+    }, otherwise = NA_character_)
+
     # build page url and read html
     paged_url <- glue::glue(build_url(link))
     page <- rvest::read_html(paged_url)
@@ -110,6 +117,7 @@ scraper <- function(link) {
     hl <- drop_empty(get_it(page, rev_hed))
     date <- drop_empty(get_it(page, rev_date))
     text <- drop_empty(get_it(page, rev_text))
+    images <- paste(get_img(page), collapse = ", ")
 
     # put together in
     tibble::tibble(date = date,
@@ -117,7 +125,8 @@ scraper <- function(link) {
                    headline = hl,
                    text = text,
                    link = paged_url
-    )
+    ) %>%
+      dplyr::mutate(imgcol = paste(images, collapse = ", "))
 
   }, otherwise = NA_character_)
   pb <- progress::progress_bar$new(total = length(p))
@@ -174,3 +183,66 @@ review_summary <- function(data) {
   cat(crayon::bold("\nGeneric link to reviews:"), data$link[1])
 }
 
+
+#' Make Collage of UGC Images
+#'
+#' @description Using the magick package to read UGC images and create a collage
+#'
+#' @param images Array of urls; each url is a UGC image link
+#'
+#' @return png collage; found on ~/Desktop with name `ugc_collage.png`
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' make_collage(out_images)}
+make_collage <- function(images) {
+
+  # create temporary folder to store columns
+  dir_create <- function(x) ifelse(!dir.exists(x), dir.create(x), FALSE)
+  folder_loc <- file.path("~/Desktop", "tmp")
+  dir_create(folder_loc)
+
+  # column function
+  make_column <- function(i, images, no_rows){
+
+    ff <- tibble::tibble(f = images[(i*no_rows+1):((i+1)*no_rows)]) %>%
+      dplyr::filter(!is.na(f)) %>%
+      dplyr::pull()
+
+    # progress
+    pb$tick()
+
+    i <- stringr::str_pad(i, 2, pad = "0")
+    magick::image_read(ff) %>%
+      magick::image_scale("x100") %>%
+      magick::image_border('white', '2x2') %>%
+      magick::image_append(stack = TRUE) %>%
+      magick::image_write(
+        file.path("~/Desktop", "tmp", paste0("cols", i,".png")),
+        format = "png")
+  }
+
+  # call column function and create with proper sizing
+  file_count <- length(images)
+  no_rows <- 5
+  no_cols <- ceiling(file_count/no_rows)
+  # establish progress bar
+  pb <- progress::progress_bar$new(total = file_count)
+  purrr::walk(0:(no_cols-1),
+              make_column,
+              images = images,
+              no_rows = no_rows)
+
+  # append images
+  colfiles <- dir(folder_loc, pattern = ".png")
+
+  magick::image_append(magick::image_read(dir(file.path(folder_loc),
+                                              pattern = ".png",
+                                              full.names = TRUE)),
+                       stack = FALSE) %>%
+    magick::image_write(file.path("~/Desktop", "ugc_collage.png"),
+                        format = "png")
+  # delete the temporary folder
+  unlink("~/Desktop/tmp", recursive=TRUE)
+}
