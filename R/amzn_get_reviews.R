@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/product-reviews/B07L1LYTPX/ref=cm"
+#' url <- "copy_paste_url"
 #' data <- amzn_get_reviews(url)}
 amzn_get_reviews <- function(link) {
 
