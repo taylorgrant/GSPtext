@@ -17,6 +17,6 @@ Function to pull Amazon reviews. Given a standard product link, it proprerly for
 }
 \examples{
 \dontrun{
-url <- "https://www.amazon.com/Sweater-Sweaters-Yorkie-Clothes-Apparel/dp/B098L4142J/ref=sr_1_24"
+url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/product-reviews/B07L1LYTPX"
 scraper(url)}
 }
