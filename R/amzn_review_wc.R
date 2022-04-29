@@ -16,14 +16,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' viz_review_wordcloud(data, type = "comparison", comp_type = "rating"),
-#' viz_review_wordcloud(data, type = "overall")
+#' amzn_review_wc(data, type = "comparison", comp_type = "rating"),
+#' amzn_review_wc(data, type = "overall")
 #'
 #' # To save a wordlcoud:
 #' png("~/Desktop/wordcloud.png") # or any other directory/filename
-#' viz_review_wordcloud(data, type = "comparison", comp_type = "rating")
+#' amzn_review_wc(data, type = "comparison", comp_type = "rating")
 #' dev.off()}
-viz_review_wordcloud <- function(data, type = c("overall", "comparison"), comp_type = c("rating", "sentiment")) {
+amzn_review_wc <- function(data, type = c("overall", "comparison"), comp_type = c("rating", "sentiment")) {
 
   # get brand/product from link
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
