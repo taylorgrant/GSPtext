@@ -21,7 +21,7 @@ term_context(
 \item{valuetype}{Type of pattern match. "glob" for glob-style wildcards, "regex" for regular expressions, "fixed" for exact matching}
 }
 \value{
-dataframe with 7 variables (\code{docname or index, from, to, pre, keyword, post, pattern})
+quanteda object with 7 variables (\code{docname or index, from, to, pre, keyword, post, pattern})
 }
 \description{
 Shamelessly borrowing the \code{quanteda::kwic()} function (\url{https://quanteda.io/index.html}) for keyword search
@@ -29,10 +29,10 @@ Shamelessly borrowing the \code{quanteda::kwic()} function (\url{https://quanted
 \examples{
 \dontrun{
 # single token
-kwic(data, pattern = "quality", window = 4, valuetype = "glob")
-kwic(data, pattern = "qual", valuetype = "regex", window = 4)
+term_context(data, pattern = "quality", window = 4, valuetype = "glob")
+term_context(data, pattern = "qual", valuetype = "regex", window = 4)
 
 # phrase matching
-kwic(data, pattern = "cheap quality", window = 4)
+term_context(data, pattern = "cheap quality", window = 4)
 }
 }
