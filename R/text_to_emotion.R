@@ -75,5 +75,5 @@ text_to_emotion <- function(data){
          title = "Percentage of Emotional Terms by Star Rating",
          subtitle = glue::glue("{bp}"),
          caption = glue::glue("Percentage based on total emotional terms used within each star rating.\nAnalysis by GS&P; Source: Amazon\nBased on {dim(data)[1]} reviews"))
-  return (list(data = out[1:4,], graph1 = p1, graph2 = p2))
+  return (list(data = out[,1:4], graph1 = p1, graph2 = p2))
 }
