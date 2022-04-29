@@ -1,0 +1,163 @@
+---
+title: "GSPtext"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amazon-Review-Text}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(GSPtext)
+```
+
+The `GSPtext` package contains a series of wrapper functions intended to make the collection, analysis, and visualization of Amazon customer reviews easy. With a simple workflow, one can scrape reviews, gather UGC images, and see how consumers are thinking about a specific product. 
+
+A sample workflow is below.
+
+## Gathering the data
+
+Data is gathered via the `amzn_get_reviews()` function. Simply pass it a URL and specify whether to gather UGC images from the reviews. Amazon adds a lot of parameters to the end of the url. These will be cleaned within the function, so the URL can just be copy and pasted from the site. 
+
+When `get_images` = "true" within the function, in addition to a data frame with reviews, all UGC images are downloaded and stitched together into a single composite and saved to the Desktop as "ugc_collage.png". If set to "false" reviews are scraped and returned as a data frame. 
+
+The data returned includes the following:
+
+* Review date
+* Star rating (1 to 5)
+* Review Headline
+* Review Text
+* Link to the page of each review
+
+
+```{r eval = FALSE}
+url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/dp/B07L1LHNGN/?_encoding=UTF8"
+data <- amzn_get_reviews(url, get_images = "true")
+```
+
+## Reviewing the data
+
+Now that we have the review data, let's see what the package allows us to do... 
+
+### What are the most frequent terms used per star rating?
+
+We'll tokenize the reviews, drop [stop words](https://en.wikipedia.org/wiki/Stop_word) and then sum up each term. It's a simple and quick way of seeing how language may vary by consumers that like the product compared to those who don't. 
+
+Data is returned as a list with two objects - a data frame with the terms and totals by star rating, and a ggplot graph.
+
+```{r eval = FALSE}
+freq_terms <- amzn_frequent_terms(data, 15)
+# to call the data 
+freq_terms$data
+# to see the graph
+freq_terms$graph
+```
+
+### How have ratings changed over time? 
+
+It can be interesting to see how ratings may change, either as a product falls in or out of favor, or if product quality changes in some material way. We can very easily visualize these changes by month and year, as bar or line graphs, and with the inclusion of a trend line or not. If you want to include a trend line, specify whether it's a smoothed "loess" line or a linear "lm" line. 
+
+```{r, eval = FALSE}
+# how have ratings changed over time
+amzn_ratings_over_time(data, time = "year", viz_type = 'bar')
+amzn_ratings_over_time(data, time = "month", viz_type = 'bar')
+amzn_ratings_over_time(data, time = "year", viz_type = 'line')
+amzn_ratings_over_time(data, time = "month", viz_type = 'line')
+amzn_ratings_over_time(data, time = "month", viz_type = 'line', trend = "loess")
+amzn_ratings_over_time(data, time = "month", viz_type = 'line', trend = "lm")
+```
+
+### What terms are associated with higher ratings? 
+
+We can begin to answer this with a scatter plot. The function [tokenizes](https://en.wikipedia.org/wiki/Lexical_analysis#Tokenization) each review, drops stop words, sums the totals, and then calculates the average rating of all reviews that include each specific term. When visualized with a scatter plot it's easy to see how certain terms have higher ratings. For example, "flavor" is often found in highly rated reviews while "taste" is more likely found in reviews with lower ratings. 
+
+```{r, eval = FALSE}
+amzn_terms_by_rating(data)
+```
+
+### Visualizing with wordclouds
+
+Wordclouds are pretty worthless, but if you have to have one, the following function makes it easy. Wordclouds either capture term frequency across all reviews or are comparative - breaking down 4 & 5 star versus 1& 2 star ratings, or splitting out across positive/negative sentiment (Sentiment is evaluated using the [Bing](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html) lexicon and imported via the `tidytext` package).
+
+```{r, eval = FALSE}
+# wordcloud for all ratings
+amzn_review_wc(data, type = "overall")
+# comparing good and bad ratings
+amzn_review_wc(data, type = "comparison", comp_type = "rating")
+# comparing positive/negative sentiment
+amzn_review_wc(data, type = "comparison", comp_type = "sentiment")
+
+```
+
+### Putting terms in context 
+
+Thus far, we've been looking at individual terms, but we also care about the context in which those terms appear. The `term_context()` acts as a convenience function function wraps around the `kwic()` function from the [Quanteda package](https://quanteda.io/). The pattern can be either whole words, partial words (when specifying "valuetype = regex"), or phrases. The `window` argument controls how many terms are returned on either side of the key term.  
+
+```{r, eval = FALSE}
+term_context(data, pattern = "perfect", window = 8, valuetype = "glob")
+term_context(data, pattern = "perf", valuetype = "regex", window = 4)
+term_context(data, pattern = "perfect fit", window = 4)
+```
+
+### How emotional are the reviews 
+
+The [NRC lexicon](https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm#:~:text=NRC%20Word%2DEmotion%20Association%20Lexicon,were%20manually%20done%20by%20crowdsourcing.) matches terms back to specific emotions (anger, anticipation, disgust, fear, joy, sadness, surprise, trust). We simply match terms from reviews to the keywords for each emotion and then calculate the percentage of total emotional words by star rating. For example, assume our 5-star reviews use 400 terms that are categorized as "emotional" and of those, 100 of those terms are tied to "joy," 25% of the emotional language of 5-star reviews would be "joy." 
+
+These summaries are then put into two plots - a dodged bar graph with the emotions on x-axis, and a stacked bar with each bar representing a star-rating. 
+
+```{r, eval = FALSE}
+# estimate sentiment per rating level 
+emotion <- text_to_emotion(data)
+# call the data
+emotion$data
+# call dodged bar graph
+emotion$graph1
+# call stacked bar graph
+emotion$graph2
+```
+
+### What is the sentiment of each review? 
+
+We can also estimate the sentiment of each review using the [sentimentr](https://github.com/trinker/sentimentr) package from Rinker. Sentiment is calculated as a weighted average for each review and accounts for "valence shifters" by adding additional weights for terms that can negate or amplify sentiment. 
+
+The function returns the complete data frame extracted from Amazon along with a column with the word count of the review, the standard deviation of the sentiment (if the review is only 1 sentence, the sd is NA), and the average sentiment of the review. 
+
+A ggplot scatter plot is also produced showing the sentiment of each review across time. Point size is based on the word count of the review. 
+
+```{r, eval = FALSE}
+sentiment <- amzn_review_sentiment(data)
+# is there a statistical relationship between rating and sentiment
+summary(lm(ave_sentiment ~ stars + word_count, data = sentiment$data)) %>% broom::tidy()
+sentiment$graph
+```
+
+### Co-occurrence networks
+
+We can also look to how terms are used in conjunction with each other. This function tokenizes each review and then aggregates by star rating to estimate how frequently each word co-occurs with all other words in the reviews. The networks are then graphed - node size is consistent, but the edge size and opacity are scaled by co-occurence frequency. 
+
+The function takes two arguments - the star rating to filter for and the floor number of co-occurrences. If the floor is too high such that there are fewer than 5 co-occurrences, the function will throw an error and ask for a lower threshold. 
+
+```{r, eval = FALSE}
+amzn_cooccur_net(data, star = 5, nn = 15)
+amzn_cooccur_net(data, star = 1, nn = 10)
+```
+
+### Saving data and graphs 
+
+Data objects and graphs can be exported using the commands below. For more information about available arguments for each, type `?write_csv` or `?ggsave` in the console. 
+
+```{r, eval = FALSE}
+# export a data frame 
+readr::write_csv(object_name, "dir/file_name.csv")
+# exporting a graph in memory (example of emotion data below)
+ggsave(emotion$graph, "dir/graph_name.png", height = h, width = w) # specify h and w
+# exporting a graph that is in view within Rstudio "plots" window
+ggsave("dir/graph_name.png", height = h, width = w) # specify h and w
+```
