@@ -42,7 +42,7 @@ viz_review_wordcloud <- function(data, type = c("overall", "comparison"), comp_t
       dplyr::count(word, rating, sort = TRUE) %>%
       acast(word ~ rating, value.var = "n", fill = 0) %>%
       wordcloud::comparison.cloud(colors = c("red", "dodgerblue"),
-                                  scale = c(4, .1),
+                                  scale = c(4, .5),
                                   title.size = 3,
                                   max.words =  300)
 
@@ -70,7 +70,7 @@ viz_review_wordcloud <- function(data, type = c("overall", "comparison"), comp_t
       dplyr::count(word) %>%
       with(wordcloud::wordcloud(word, n,
                                 colors = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02"),
-                                scale = c(4, .5),
+                                scale = c(4.5, .5),
                                 max.words =  300))
   }
   par(mar=c(5.1, 4.1, 4.1, 2.1))
