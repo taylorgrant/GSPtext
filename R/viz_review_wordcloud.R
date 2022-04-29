@@ -29,7 +29,7 @@ viz_review_wordcloud <- function(data, type = c("overall", "comparison"), comp_t
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
   toCap <- function(x) gsub("(?<=^|_)([a-z])", "\\U\\1", x, perl=TRUE)
 
-  if (tolower(type) == "comparison" & tolower(comp_type) == "rating") {
+  if (tolower(type) == "comparison" && tolower(comp_type) == "rating") {
     cat("Splitting terms by Hi (5 & 4 star) and Lo (1 & 2 star) reviews\n\n")
 
     # graph
@@ -46,7 +46,7 @@ viz_review_wordcloud <- function(data, type = c("overall", "comparison"), comp_t
                                   title.size = 3,
                                   max.words =  300)
 
-  } else if (tolower(type) == "comparison" & tolower(comp_type) == "sentiment") {
+  } else if (tolower(type) == "comparison" && tolower(comp_type) == "sentiment") {
     par(mar = rep(0, 4))
     data %>%
       dplyr::mutate(text = gsub("[[:punct:]]|[[:digit:]]", "", text)) %>%
