@@ -43,6 +43,7 @@ amzn_review_sentiment <- function(data){
     tidyr::unnest(sentiment) %>%
     dplyr::select(-element_id)
 
+
   # plotting changes over time
     p <- out %>%
       ggplot2::ggplot(ggplot2::aes(x = date, y = ave_sentiment, fill = ave_sentiment, size = word_count)) +
