@@ -1,6 +1,6 @@
 #' Terms by Average Amazon Rating
 #'
-#' @description Graph with the most frequent terms used and each term is positioned by its average star rating. The dashed line represents the average star rating for the product.
+#' @description Graph with the most frequent terms used and each term is positioned by the average of all reviews in which that term was used. The dashed line represents the average star rating for the product.
 #'
 #' For example, if reviewers for a specific product used the word "perfect" 88 times and the average rating of the reviews using that term is 4.85,
 #' "perfect" will be plotted at (x = 88, y = 4.85).
