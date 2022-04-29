@@ -14,6 +14,9 @@ png collage; found on ~/Desktop with name \code{ugc_collage.png}
 }
 \description{
 Using the magick package to read UGC images and create a collage
+
+Not every review posts a photo, but row order isn't kept by the crawler. As a result, there is no mapping
+between review, rating, and image; one composite is created rather than e.g., images by star rating.
 }
 \examples{
 \dontrun{
