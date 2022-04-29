@@ -4,7 +4,7 @@
 \alias{amzn_get_reviews}
 \title{Get Amazon Reviews}
 \usage{
-amzn_get_reviews(link)
+amzn_get_reviews(link, get_images = c("false", "true"))
 }
 \arguments{
 \item{link}{A link to an Amazon product}
