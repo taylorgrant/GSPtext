@@ -5,7 +5,7 @@
 #' @param data Data frame created by `GSPtext::get_reviews()` or in the same format
 #' @param time Time frame to aggregate by - either Monthly or Yearly
 #' @param viz_type Type of graph - either bar graph or line chart
-#' @param trend Include a trend line in the graph - either "lm" or "loess"
+#' @param trend Include a trend line in the graph - either "lm" (linear fit) or "loess" (local polynomial fit)
 #'
 #' @return ggplot2 graphs - either bar or line plots
 #' @export
@@ -13,7 +13,7 @@
 #' @examples
 #' \dontrun{
 #' amzn_ratings_over_time(data, time = "month", viz_type = "line", trend = "lm")}
-amzn_ratings_over_time <- function(data, time = c("month", "year"), viz_type = c("bar", "line"), trend = c("loess", "lm", "FALSE")) {
+amzn_ratings_over_time <- function(data, time = c("month", "year"), viz_type = c("bar", "line"), trend = c("false", "loess", "lm")) {
 
   # get brand/product from link
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
