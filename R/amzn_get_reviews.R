@@ -26,7 +26,7 @@ amzn_get_reviews <- function(link, get_images = c("false", "true")) {
                   stars = as.numeric(trimws(gsub("\\out.*", "", stars))),
                   text = trimws(gsub("[\r\n]", "", text)))
 
-  if (tolower(get_images) == FALSE) {
+  if (tolower(get_images) == "false") {
     # print summary of the data
     review_summary(out_df)
 
