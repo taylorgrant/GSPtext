@@ -162,7 +162,11 @@ review_summary <- function(data) {
 
   avg_star <- data %>%
     dplyr::group_by(stars) %>%
-    dplyr::summarise(avg_wordcount = mean(lengths(gregexpr("\\w+", text))))
+    dplyr::summarise(review_count = dplyr::n(),
+                     avg_wordcount = mean(lengths(gregexpr("\\w+", text)))) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(review_pct = review_count/sum(review_count)) %>%
+    dplyr::relocate(review_pct, .after = review_count)
 
   # reviews over time
   by_time <- data %>%
