@@ -10,7 +10,7 @@ amzn_review_sentiment(data)
 \item{data}{Data frame created by \code{GSPtext::get_reviews()} or in the same format}
 }
 \value{
-Tibble of original data with added sentiment information -- ("word count", "sd", "avg sentiment")
+Tibble of original data with added sentiment information -- ("word count", "sd", "avg sentiment"). ggplot scatterplot of the average sentiment of each review over time.
 }
 \description{
 Estimating the sentiment for each review of a product. The function leverages the \href{https://github.com/trinker/sentimentr}{sentimentr} package for estimation at the level of each review text.
@@ -22,11 +22,11 @@ Estimating the sentiment for each review of a product. The function leverages th
 sentiment <- amzn_review_sentiment(data)
 
 # what's the strength of the relationship b/n sentiment and rating
-summary(lm(ave_sentiment ~ stars, data = sentiment$data)) \%>\% broom::tidy()
+summary(lm(ave_sentiment ~ stars + word_count, data = sentiment$data)) \%>\% broom::tidy()
 
 # find review with max or min sentiment
-sentiment[which.max(sentiment$ave_sentiment),]
-sentiment[which.min(sentiment$ave_sentiment),]
+sentiment$data[which.max(sentiment$data$ave_sentiment),]
+sentiment$data[which.min(sentiment$data$ave_sentiment),]
 
 # summarize sentiment by review rating
 sentiment <- amzn_review_sentiment(data)
@@ -36,7 +36,7 @@ sd = mean(sd, na.rm = TRUE), reviews = dplyr::n())
 
 # aggregate to monthly level and plot average sentiment
 sentiment <- amzn_review_sentiment(data)
-sentiment \%>\%
+sentiment$data \%>\%
   dplyr::mutate(month = lubridate::floor_date(date, "month")) \%>\%
   dplyr::group_by(month) \%>\%
   dplyr::summarise(monthly_sentiment = mean(ave_sentiment)) \%>\%

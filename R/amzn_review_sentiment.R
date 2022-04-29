@@ -6,7 +6,7 @@
 #'
 #' @param data Data frame created by `GSPtext::get_reviews()` or in the same format
 #'
-#' @return Tibble of original data with added sentiment information -- ("word count", "sd", "avg sentiment")
+#' @return Tibble of original data with added sentiment information -- ("word count", "sd", "avg sentiment"). ggplot scatterplot of the average sentiment of each review over time.
 #' @export
 #'
 #' @examples
@@ -14,11 +14,11 @@
 #' sentiment <- amzn_review_sentiment(data)
 #'
 #' # what's the strength of the relationship b/n sentiment and rating
-#' summary(lm(ave_sentiment ~ stars, data = sentiment$data)) %>% broom::tidy()
+#' summary(lm(ave_sentiment ~ stars + word_count, data = sentiment$data)) %>% broom::tidy()
 #'
 #' # find review with max or min sentiment
-#' sentiment[which.max(sentiment$ave_sentiment),]
-#' sentiment[which.min(sentiment$ave_sentiment),]
+#' sentiment$data[which.max(sentiment$data$ave_sentiment),]
+#' sentiment$data[which.min(sentiment$data$ave_sentiment),]
 #'
 #' # summarize sentiment by review rating
 #' sentiment <- amzn_review_sentiment(data)
@@ -28,7 +28,7 @@
 #'
 #' # aggregate to monthly level and plot average sentiment
 #' sentiment <- amzn_review_sentiment(data)
-#' sentiment %>%
+#' sentiment$data %>%
 #'   dplyr::mutate(month = lubridate::floor_date(date, "month")) %>%
 #'   dplyr::group_by(month) %>%
 #'   dplyr::summarise(monthly_sentiment = mean(ave_sentiment)) %>%
@@ -36,36 +36,30 @@
 #'   ggplot2::geom_line()}
 amzn_review_sentiment <- function(data){
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
-  cat("Estimating the sentiment for each review. This will just take a minute...\n")
+  cat(crayon::cyan("Estimating the sentiment for each review. This will just take a minute...\n"))
+
   out <- data %>%
     dplyr::mutate(sentiment = purrr::map(text, sentimentr::sentiment_by)) %>%
     tidyr::unnest(sentiment) %>%
     dplyr::select(-element_id)
 
   # plotting changes over time
-
     p <- out %>%
-      dplyr::select(date, stars, ave_sentiment) %>%
-      tidyr::pivot_longer(names_to = "metric",
-                   values_to = "value",
-                   -date) %>%
-      dplyr::group_by(metric) %>%
-      dplyr::mutate(value = scale(value),
-             ma13 = slider::slide_dbl(value, mean, .before = 6, .after = 6, .complete = TRUE)) %>%
-      ggplot2::ggplot(ggplot2::aes(x = date, y = ma13, group = metric, color = metric)) +
-      ggplot2::geom_line(size = .6) +
-      ggplot2::geom_smooth(method = "lm", se = FALSE) +
-      ggplot2::scale_color_manual(values = c("#003f5c", "#ff7c43"),
-                         name = "Change in:",
-                         labels = c("Sentiment", "Rating")) +
+      ggplot2::ggplot(ggplot2::aes(x = date, y = ave_sentiment, fill = ave_sentiment, size = word_count)) +
+      ggplot2::geom_point(pch = 21, stroke = .4, color = "darkgray") +
+      viridis::scale_fill_viridis(option = "A") +
       ggplot2::theme_minimal() +
-      ggplot2::labs(x = NULL, y = NULL,
-           title = "Trending changes between sentiment and rating",
+      ggplot2::labs(x = NULL, y = "Sentiment of Review",
+           title = "Sentiment of Amazon Reviews Over Time",
            subtitle = glue::glue("{bp}"),
-           caption = glue::glue("Analysis by GS&P; Source: Amazon\ \n Based on {dim(data)[1]} reviews"))
+           caption = glue::glue("Bubble size reflects the word count of the review\nAnalysis by GS&P; Source: Amazon\ \n Based on {dim(data)[1]} reviews")) +
+    ggplot2::theme(
+            legend.position = "none")
 
     out <- list(data = out, graph = p)
 
 }
+
+
 
 
