@@ -54,8 +54,8 @@ amzn_get_reviews <- function(link, get_images = c("false", "true")) {
     # print summary of the data
     review_summary(out_df)
 
-    out_df
-      # dplyr::select(-imgcol)
+    out_df %>%
+      dplyr::select(-imgcol)
     }
 
 }
