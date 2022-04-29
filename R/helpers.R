@@ -126,7 +126,8 @@ scraper <- function(link) {
                    text = text,
                    link = paged_url
     ) %>%
-      dplyr::mutate(imgcol = paste(images, collapse = ", "))
+      dplyr::mutate(imgcol = paste(images, collapse = ", "),
+                    imgcol = ifelse(imgcol == "", NA, imgcol))
 
   }, otherwise = NA_character_)
   pb <- progress::progress_bar$new(total = length(p))
@@ -187,6 +188,9 @@ review_summary <- function(data) {
 #' Make Collage of UGC Images
 #'
 #' @description Using the magick package to read UGC images and create a collage
+#'
+#' Not every review posts a photo, but row order isn't kept by the crawler. As a result, there is no mapping
+#' between review, rating, and image; one composite is created rather than e.g., images by star rating.
 #'
 #' @param images Array of urls; each url is a UGC image link
 #'
