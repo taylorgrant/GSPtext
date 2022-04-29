@@ -11,7 +11,7 @@
 #' \dontrun{
 #' url <- "copy_paste_url"
 #' data <- amzn_get_reviews(url)}
-amzn_get_reviews <- function(link) {
+amzn_get_reviews <- function(link, get_images = c("false", "true")) {
 
   # get reviews
   tmp <- scraper(link)
@@ -26,19 +26,36 @@ amzn_get_reviews <- function(link) {
                   stars = as.numeric(trimws(gsub("\\out.*", "", stars))),
                   text = trimws(gsub("[\r\n]", "", text)))
 
-  out_images <- out_df %>%
-    dplyr::distinct(imgcol) %>%
-    tidyr::separate_rows(imgcol, sep = ", ") %>%
-    dplyr::pull()
+  if (tolower(get_images) == FALSE) {
+    # print summary of the data
+    review_summary(out_df)
 
-  out_images <- regmatches(out_images,regexpr(".*\\.jpg|.png",out_images, perl = TRUE))
+    out_df %>%
+      dplyr::select(-imgcol)
+  } else if (tolower(get_images) == "true" && all(is.na(out_df$imgcol))) {
+    # print summary of the data
+    cat(crayon::cyan("No images were found in the reviews...\n"))
+    review_summary(out_df)
 
-  cat(crayon::cyan("\n\nSaving a collage of UGC images to your desktop with the filename 'ugc_collage.png'...\n"))
-  make_collage(out_images)
+    out_df %>%
+      dplyr::select(-imgcol)
 
-  # print summary of the data
-  review_summary(out_df)
+  } else {
+    out_images <- out_df %>%
+      dplyr::distinct(imgcol) %>%
+      tidyr::separate_rows(imgcol, sep = ", ") %>%
+      dplyr::pull()
 
-  out_df %>%
-    dplyr::select(-imgcol)
+    out_images <- regmatches(out_images,regexpr(".*\\.jpg|.png",out_images, perl = TRUE))
+
+    cat(crayon::cyan("\n\nSaving a collage of UGC images to your desktop with the filename 'ugc_collage.png'...\n"))
+    make_collage(out_images)
+
+    # print summary of the data
+    review_summary(out_df)
+
+    out_df
+      # dplyr::select(-imgcol)
+    }
+
 }
