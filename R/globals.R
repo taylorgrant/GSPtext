@@ -1,1 +1,4 @@
-utils::globalVariables(c("value", "review_date", "review_stars", "review_text"))
+utils::globalVariables(c("value", "date", "stars", "text",
+                         "time_agg", "avg_star", "word", "n", "rating",
+                         "year", "imgcol", "f", "frac", "sentiment",
+                         "element_id", "ave_sentiment", "ma13", "metric"))

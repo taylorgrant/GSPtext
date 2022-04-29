@@ -13,10 +13,26 @@ Imports:
     dplyr,
     ggplot2,
     glue,
+    knitr,
     lubridate,
+    magick,
     magrittr,
     progress,
     purrr,
+    quanteda,
+    reshape2,
     rvest,
+    scales,
+    sentimentr,
+    stringr,
+    textdata,
     tibble,
-    urltools
+    tidyr,
+    tidytext,
+    urltools,
+    viridis,
+    widyr,
+    wordcloud
+VignetteBuilder: knitr
+Suggests: 
+    rmarkdown
