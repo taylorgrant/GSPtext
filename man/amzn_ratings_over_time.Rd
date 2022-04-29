@@ -8,7 +8,7 @@ amzn_ratings_over_time(
   data,
   time = c("month", "year"),
   viz_type = c("bar", "line"),
-  trend = c("loess", "lm", "FALSE")
+  trend = c("false", "loess", "lm")
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ amzn_ratings_over_time(
 
 \item{viz_type}{Type of graph - either bar graph or line chart}
 
-\item{trend}{Include a trend line in the graph - either "lm" or "loess"}
+\item{trend}{Include a trend line in the graph - either "lm" (linear fit) or "loess" (local polynomial fit)}
 }
 \value{
 ggplot2 graphs - either bar or line plots
