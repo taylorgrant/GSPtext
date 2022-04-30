@@ -20,7 +20,6 @@
 #' ggsave("directory/filename.png")}
 amzn_terms_by_rating <- function(data) {
 
-  cat(crayon::blue("To save this graph, use the `ggsave()` function. Type '?ggsave' into the console to learn more...\n\n"))
   # get brand/product from link
   bp <- gsub("\\/.*", "", urltools::url_parse(data$link[1])$path)
 
