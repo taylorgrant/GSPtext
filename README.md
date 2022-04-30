@@ -30,26 +30,32 @@ product URL from Amazon will work. Don’t worry about cleaning the tacked
 on parameters. The function will clean it, determine the number of pages
 to crawl, scrape the reviews, and return a tidy data frame.
 
+If you want UGC imagery included in the reviews, specify
+`get_images = "true"` as an argument and a composite will be created and
+saved to your desktop.
+
 ``` r
 library(GSPtext)
 library(tidyverse)
+
 # specify the url 
 url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/dp/B07L1LHNGN/?_encoding=UTF8"
+
 # pull reviews and images 
 data <- amzn_get_reviews(url, get_images = "false") # either "true" or "false" for images
-sample_n(data, 4)[,1:4] # dropping the link
+sample_n(data, 6)[,1:4] # dropping the link
 ```
 
-    #>         date stars                                        headline
-    #> 1 2021-03-28     3 The quality is good and l would buy this again.
-    #> 2 2022-03-31     5              So cute!! Reminds me of a Carhartt
-    #> 3 2021-03-23     5                    perfect for little new puppy
-    #> 4 2022-04-04     5                                    Good quality
-    #>                                                                                                                                                                                                text
-    #> 1                                                                                 The sizes run a little small, being made of cotton they will shrink when dryed. I recommend buying a size larger.
-    #> 2                                                      My puppy is 4lbs and this fit very well. The arms were a little too long but all we had to do was cuff them!! Love it. He looks so handsome!
-    #> 3                                                                                                                                                                    looks so cute on a little one.
-    #> 4 Very cute sweater for my dog. I got the xs and it fits him great it's fitted on the belly so he doesn't get pee on it when he goes potty. I've washed it maybe two to three times and it held up.
+    #>         date stars                                         headline
+    #> 1 2022-01-03     5                                         Adorable
+    #> 2 2022-01-09     5                                         To small
+    #> 3 2022-01-30     1 Runs very small. Too small for my 18 pound puppy
+    #> 4 2021-01-29     5                So cute and cozy and fits perfect
+    #>                                                                                                                                                                                                                                                                                                          text
+    #> 1                                                                                                                                                                                                                 Adorable. Affordable. Fits perfectly. Soft, stretchy, comfy. Arrived in less than two days!
+    #> 2 The media could not be loaded.                                                                           Thought it would be a perfect size my yorkie is about 5 pounds and i got him a small but fursure needed to get a medium. But overall the sweater is really nice and good material and warm for him
+    #> 3                                                                                                                                                                                                                                                               Small & not very cozy fabric for a sweatshirt
+    #> 4                                                                                                                    Darling little sweater for my little 10lb dog. I love the hood on it. The neck is a tiny bit small but she loves it, she's warm and its a great fit. I ordered size med for my 10lb pup.
 
 ### Most frequent terms
 
@@ -96,7 +102,6 @@ interesting when looking for language to tie back to a product.
 
 ``` r
 amzn_terms_by_rating(sample_reviews)
-#> To save this graph, use the `ggsave()` function. Type '?ggsave' into the console to learn more...
 #> Joining, by = "word"
 ```
 
@@ -181,15 +186,15 @@ p1 / p2
 
 Estimating sentiment of each review using the
 [sentimentr](https://github.com/trinker/sentimentr) package from Rinker.
-Sentiment is calculated at the sentence level and then the sentiment of
-each review is the weighted average for each review. The package
-accounts for “valence shifters” by adding additional weights for terms
-that can negate or amplify sentiment.
+Sentiment is calculated at the sentence level and the “review
+senetiment” is then the weighted average across all sentences comprising
+that review. The package accounts for “valence shifters” by adding
+additional weights for terms that can negate or amplify sentiment.
 
-The returned data is the full review data frame and added columns - word
-count for each review, standard deviation for the sentiment estimate for
-each review (only if the review includes more than 1 sentence), and the
-estimated sentiment for each review.
+The returned data is the full review data frame with sentiment data
+added - word count for each review, standard deviation for the sentiment
+estimate for each review (only if the review includes more than 1
+sentence), and the estimated sentiment for each review.
 
 ``` r
 sentiment <- amzn_review_sentiment(sample_reviews)
