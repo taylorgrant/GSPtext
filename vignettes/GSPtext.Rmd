@@ -156,8 +156,8 @@ Data objects and graphs can be exported using the commands below. For more infor
 ```{r, eval = FALSE}
 # export a data frame 
 readr::write_csv(object_name, "dir/file_name.csv")
-# exporting a graph in memory (example of emotion data below)
-ggsave(emotion$graph, "dir/graph_name.png", height = h, width = w) # specify h and w
+# exporting a graph in memory (example of frequent terms data)
+ggsave(freq_terms$graph, "dir/graph_name.png", height = h, width = w) # specify h and w
 # exporting a graph that is in view within Rstudio "plots" window
 ggsave("dir/graph_name.png", height = h, width = w) # specify h and w
 ```
