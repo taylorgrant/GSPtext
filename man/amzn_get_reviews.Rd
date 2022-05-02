@@ -8,6 +8,8 @@ amzn_get_reviews(link, get_images = c("false", "true"))
 }
 \arguments{
 \item{link}{A link to an Amazon product}
+
+\item{get_images}{Whether to download UGC images included with reviews}
 }
 \value{
 Data frame with date, stars, headline, review text, and the paginated link.

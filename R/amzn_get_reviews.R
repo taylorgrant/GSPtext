@@ -3,6 +3,7 @@
 #' @description Convenience wrapper around functions that scrape Amazon reviews. Provide a product link and this will determine the number of pages to crawl over and will return a clean data frame of reviews.
 #'
 #' @param link A link to an Amazon product
+#' @param get_images Whether to download UGC images included with reviews
 #'
 #' @return Data frame with date, stars, headline, review text, and the paginated link.
 #' @export
