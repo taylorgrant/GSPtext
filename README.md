@@ -46,16 +46,16 @@ data <- amzn_get_reviews(url, get_images = "false") # either "true" or "false" f
 sample_n(data, 6)[,1:4] # dropping the link
 ```
 
-    #>         date stars                                         headline
-    #> 1 2022-01-03     5                                         Adorable
-    #> 2 2022-01-09     5                                         To small
-    #> 3 2022-01-30     1 Runs very small. Too small for my 18 pound puppy
-    #> 4 2021-01-29     5                So cute and cozy and fits perfect
-    #>                                                                                                                                                                                                                                                                                                          text
-    #> 1                                                                                                                                                                                                                 Adorable. Affordable. Fits perfectly. Soft, stretchy, comfy. Arrived in less than two days!
-    #> 2 The media could not be loaded.                                                                           Thought it would be a perfect size my yorkie is about 5 pounds and i got him a small but fursure needed to get a medium. But overall the sweater is really nice and good material and warm for him
-    #> 3                                                                                                                                                                                                                                                               Small & not very cozy fabric for a sweatshirt
-    #> 4                                                                                                                    Darling little sweater for my little 10lb dog. I love the hood on it. The neck is a tiny bit small but she loves it, she's warm and its a great fit. I ordered size med for my 10lb pup.
+    #>         date stars                                              headline
+    #> 1 2021-12-13     1 Not true to size it is very big way to big for my pup
+    #> 2 2020-10-24     2                                                Hoodie
+    #> 3 2022-04-17     1            Came stained and with dog hair all over it
+    #> 4 2022-01-12     1                                      Not true to size
+    #>                                                                                                                                                                                                                                                                        text
+    #> 1                                                                                                                                                                                                                                           Extremely huge sizing is wrong.
+    #> 2                                                                                                                                                    It gets those little balls one it it looks old (like a few yrs )and I have only have had it no more then 4 to 6 weeks.
+    #> 3 Ordered this dog sweatshirt and opened it up to find stains on one side and someone else’s dog or cat hair all over the other side (hopefully the animal did not have fleas!) . Super disappointed as this was supposed to be new. I would not recommend purchasing this.
+    #> 4                                                                                                                                                                                                                          I got a large and it’s still to small for my sog
 
 ### Most frequent terms
 
@@ -171,16 +171,32 @@ reviews compared to 1 star?
 
 ``` r
 library(patchwork)
-emotion <- text_to_emotion(sample_reviews)
+emotion_star <- text_to_emotion(sample_reviews, "stars")
 #> Joining, by = "word"
 #> Joining, by = "word"
 # emotion$data
-p1 <-emotion$graph1
-p2 <- emotion$graph2
+p1 <-emotion_star$graph1
+p2 <- emotion_star$graph2
 p1 / p2
 ```
 
 <img src="man/figures/README-emotion-1.png" width="80%" style="display: block; margin: auto;" />
+
+The emotional valence of reviews can also be split out by the year of
+the review.
+
+``` r
+library(patchwork)
+emotion_year <- text_to_emotion(sample_reviews, "year")
+#> Joining, by = "word"
+#> Joining, by = "word"
+# emotion$data
+p1 <-emotion_year$graph1
+p2 <- emotion_year$graph2
+p1 / p2
+```
+
+<img src="man/figures/README-emotion2-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Estimate the sentiment of the reviews
 

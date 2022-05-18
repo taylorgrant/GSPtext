@@ -117,10 +117,21 @@ Using the [NRC lexicon](https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.ht
 
 ```{r emotion}
 library(patchwork)
-emotion <- text_to_emotion(sample_reviews)
+emotion_star <- text_to_emotion(sample_reviews, "stars")
 # emotion$data
-p1 <-emotion$graph1
-p2 <- emotion$graph2
+p1 <-emotion_star$graph1
+p2 <- emotion_star$graph2
+p1 / p2
+```
+
+The emotional valence of reviews can also be split out by the year of the review. 
+
+```{r emotion2}
+library(patchwork)
+emotion_year <- text_to_emotion(sample_reviews, "year")
+# emotion$data
+p1 <-emotion_year$graph1
+p2 <- emotion_year$graph2
 p1 / p2
 ```
 
