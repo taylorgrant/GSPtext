@@ -23,6 +23,7 @@ Imports:
     purrr,
     quanteda,
     reshape2,
+    rlang,
     rvest,
     scales,
     sentimentr,
