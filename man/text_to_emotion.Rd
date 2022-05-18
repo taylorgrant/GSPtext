@@ -4,31 +4,19 @@
 \alias{text_to_emotion}
 \title{Text to Emotion}
 \usage{
-text_to_emotion(data)
+text_to_emotion(data, grouping = c("stars", "year"))
 }
 \arguments{
 \item{data}{Data frame created by \code{GSPtext::get_reviews()} or in the same format}
+
+\item{grouping}{Should the data be grouped by Star Rating or Review Year}
 }
 \value{
-List with three objects - "data" (star, sentiment, n count, percentage), "graph1" (dodged bar graph), "graph3 (stacked bar)
+List with three objects - "data" (star/year, sentiment, n count, percentage), "graph1" (dodged bar graph), "graph3 (stacked bar)
 }
 \description{
 Applying the \href{https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm}{NRC lexicon} to the review texts. Each term from the reviews is matched to the lexicon. For each star rating, all emotional terms are then counted and percentages calculated for each grouping (rating).
 }
 \details{
 The NRC lexicon should be a one time download.
-}
-\examples{
-\dontrun{
-out <- text_to_emotion(data)
-
-# to call each object within the list
-out$data
-out$graph1
-out$graph2
-
-# if only want to visualize a graph
-text_to_emotion(data)$graph1
-text_to_emotion(data)$graph2
-}
 }
