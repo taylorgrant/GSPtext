@@ -114,13 +114,21 @@ These summaries are then put into two plots - a dodged bar graph with the emotio
 
 ```{r, eval = FALSE}
 # estimate sentiment per rating level 
-emotion <- text_to_emotion(data)
+emotion <- text_to_emotion(data, "stars")
 # call the data
 emotion$data
 # call dodged bar graph
 emotion$graph1
 # call stacked bar graph
 emotion$graph2
+```
+
+We can also group the reviews by year to see how emotion changes over time. 
+
+```{r, eval=FALSE}
+# sentiment per year
+emotion <- text_to_emotion(data, "year")
+
 ```
 
 ### What is the sentiment of each review? 
