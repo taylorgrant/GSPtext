@@ -38,7 +38,7 @@ page_count <- function(url){
   p <- 1
   url_p1 <- glue::glue(url)
   page <- rvest::read_html(url_p1)
-  cat(crayon::cyan("Counting pages to crawl over..."))
+  cat(crayon::cyan("\nCounting pages to crawl over..."))
   out <- page %>%
     rvest::html_elements("#filter-info-section") %>%
     rvest::html_text() %>%
