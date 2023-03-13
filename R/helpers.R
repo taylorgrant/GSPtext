@@ -67,7 +67,6 @@ page_count <- function(url){
 #' url <- "https://www.amazon.com/Fashion-Focus-Sweaters-Chihuahua-Clothing/product-reviews/B07L1LYTPX"
 #' scraper(url)}
 scraper <- function(link) {
-
   # get paginated reviews url
   p_url <- build_url(link)
   # determine total number of pages
@@ -131,7 +130,18 @@ scraper <- function(link) {
 
   }, otherwise = NA_character_)
   pb <- progress::progress_bar$new(total = length(p))
-  out <- purrr::map2(p_url, p, reviews)
+  out1 <- purrr::map2(p_url, p, reviews)
+  # which are empty? run through again
+  p_empty <- which(as.numeric(lapply(out1, nrow)) == 0)
+  pb <- progress::progress_bar$new(total = length(p_empty))
+  out2 <- purrr::map2(p_url, p_empty, reviews)
+  # once more
+  p_empty <- which(as.numeric(lapply(out2, nrow)) == 0)
+  pb <- progress::progress_bar$new(total = length(p_empty))
+  out3 <- purrr::map2(p_url, p_empty, reviews)
+  # append into single listicle
+  out <- append(out1, out2)
+  out <- append(out, out3)
 }
 
 #' Summary Review
