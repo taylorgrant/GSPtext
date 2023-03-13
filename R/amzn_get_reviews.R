@@ -13,12 +13,11 @@
 #' url <- "copy_paste_url"
 #' data <- amzn_get_reviews(url)}
 amzn_get_reviews <- function(link, get_images = c("false", "true")) {
-
   # get reviews
   tmp <- scraper(link)
   # identify pages with errors (returned as NA)
-  errors <- which(is.na(tmp))
-  cat("There were css errors on the following pages [", errors, "]. \nAs a result, reviews from these pages have been dropped from the data...")
+  # errors <- which(is.na(tmp))
+  # cat("There were css errors on the following pages [", errors, "]. \nAs a result, reviews from these pages have been dropped from the data...")
 
   # drop NA and reduce list to data frame
   out_df <- tmp[!is.na(tmp)] %>%
@@ -31,8 +30,8 @@ amzn_get_reviews <- function(link, get_images = c("false", "true")) {
     # print summary of the data
     review_summary(out_df)
 
-    out_df %>%
-      dplyr::select(-imgcol)
+    out_df # %>%
+      # dplyr::select(-imgcol)
   } else if (tolower(get_images) == "true" && all(is.na(out_df$imgcol))) {
     # print summary of the data
     cat(crayon::cyan("No images were found in the reviews...\n"))
