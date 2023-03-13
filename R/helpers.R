@@ -117,7 +117,7 @@ scraper <- function(link) {
     hl <- drop_empty(get_it(page, rev_hed))
     date <- drop_empty(get_it(page, rev_date))
     text <- drop_empty(get_it(page, rev_text))
-    images <- paste(get_img(page), collapse = ", ")
+    # images <- paste(get_img(page), collapse = ", ")
 
     # put together in
     tibble::tibble(date = date,
@@ -125,9 +125,9 @@ scraper <- function(link) {
                    headline = hl,
                    text = text,
                    link = paged_url
-    ) %>%
-      dplyr::mutate(imgcol = paste(images, collapse = ", "),
-                    imgcol = ifelse(imgcol == "", NA, imgcol))
+    ) # %>%
+      # dplyr::mutate(imgcol = paste(images, collapse = ", "),
+      #               imgcol = ifelse(imgcol == "", NA, imgcol))
 
   }, otherwise = NA_character_)
   pb <- progress::progress_bar$new(total = length(p))
