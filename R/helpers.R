@@ -131,10 +131,14 @@ scraper <- function(link) {
   }, otherwise = NA_character_)
   pb <- progress::progress_bar$new(total = length(p))
   out1 <- purrr::map2(p_url, p, reviews)
+  # drop the NULL values (why are they null?)
+  out1 <- out1[!is.na(out1)]
   # which are empty? run through again
   p_empty <- which(as.numeric(lapply(out1, nrow)) == 0)
   pb <- progress::progress_bar$new(total = length(p_empty))
   out2 <- purrr::map2(p_url, p_empty, reviews)
+  # drop NULL
+  out2 <- out2[!is.na(out2)]
   # once more
   p_empty <- which(as.numeric(lapply(out2, nrow)) == 0)
   pb <- progress::progress_bar$new(total = length(p_empty))
